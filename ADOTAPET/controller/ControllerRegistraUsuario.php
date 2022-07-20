@@ -1,29 +1,66 @@
-<?php 
-require_once "../model/usuario.php"; 
+<?php
 
-class Registra{
-    private $user;
+require_once("../model/usuario.php");
 
-    public function __construct(){
-        $this->user = new Usuario();
-        $this->user->setNome($_POST['nome']);
-        $this->user->setSobrenome($_POST['sobrenome']);
-        $this->user->setEmail($_POST['email']);
-        $this->user->setSenha($_POST['senha']);
-        $this->user->setAdmin(0);
-        $this->registrar();
+if (isset($_POST)) {
+    if (isset($_POST['CPF'])) {
+        cadastrarusuarioCpf();
     }
-
-    private function registrar(){
-        $resultado = $this->user->incluir();
-
-        if($resultado >= 1){
-            echo "<script>alert('Registro incluído com sucesso!');document.location='../view/login.php'</script>";
-        }else{
-            echo "<script>alert('Erro ao gravar registro!, verifique se o livro não está duplicado');history.back()</script>";
-        }
+    if (isset($_POST['CNPJ'])) {
+        cadastrarUsuarioCnpj();
     }
 }
+function cadastrarusuarioCpf()
+{
+    var_dump($_POST);
+    $user = new Usuario();
+    $user->setNome($_POST['nome_usuario']);
+    $user->setTelefone($_POST['telefone']);
+    $user->setCPF($_POST['CPF']);
+    $user->setNascimento($_POST['nascimento']);
+    $user->setEndereco($_POST['endereco']);
+    $user->setEmail($_POST['email']);
+    $user->setLogin($_POST['email']);
+    $user->setSenha($_POST['senha']);
+     
+    if (isset($_POST['sexo']))
+        $_POST['masc'] = (isset($_POST['fem'])) ? $_POST['outro'] : null;
+    $user->setSexo($_POST['sexo']);
+
+    $user->setNivel_Acesso(1);
+    $resultado = $user->incluir();
+
+    if ($resultado >= 1) {
+        header("Location: ../cadastro1.php?sucesso='ok'");
+    } else {
+        // echo "<script>alert('Erro ao registrar usuário!');history.back()</script>";
+        header("Location: ../cadastro1.php?errocad='ok'");
+    }
+}
+function cadastrarUsuarioCnpj()
+{
+    // var_dump($_POST);
+    $user = new Usuario();
+    $user->setNome($_POST['nome_usuario']);
+    $user->setTelefone($_POST['telefone']);
+    $user->setCNPJ($_POST['CNPJ']);
+    $user->setEndereco($_POST['endereco']);
+    $user->setBanco($_POST['contabancaria']);
+    $user->setEmail($_POST['email']);
+    $user->setLogin($_POST['email']);
+    $user->setSenha($_POST['senha']);
+    $user->setNivel_Acesso(2);
+    $resultado = $user->incluir();
 
 
+
+
+
+    if ($resultado >= 1) {
+        header("Location: ../cadastro1.php?sucesso='ok'");
+    } else {
+        // echo "<script>alert('Erro ao registrar usuário!');history.back()</script>";
+        header("Location: ../cadastro1.php?errocad='ok'");
+    }
+}
 ?>
